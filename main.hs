@@ -1,5 +1,5 @@
 import System.Random (randomRIO, random)
-
+import Data.Char
 oi = print("ola")
 
 
@@ -42,26 +42,39 @@ compareLists (x:xs,y:ys) = do
 -----------------------------------------------------
 -- data Info = Info Int Int
 
-compareValue (_,[],p) = return p
+compareValue (_,[],p) = return 0
 compareValue (key,x:xs, parcial) = do 
-    if key == x then
-        compareValue (key,xs,parcial+1)
-    else
-        print ""
+    if key == x then do
+        return 1
+    else 
+        compareValue (key,xs,parcial)
 
 -- if está na posicao aumenta 1 no completo
 -- else procura se tem em outra posicao e aumenta o parcial caso tiver
---compareAnswer :: ([Char], [Char], Int, Int) -> Info
-compareAnswer ([],[],completo,parcial) = return (completo, parcial)
-compareAnswer (x:xs,y:ys, completo, parcial) = do 
-    if x == y then
-        compareAnswer (xs,ys,completo+1,parcial)
+
+--auxCompareAnswer :: ([Char], [Char], Int, Int) -> (Int, Int)
+auxCompareAnswer ([],[],completo,parcial) = return (completo, parcial)
+auxCompareAnswer (x:xs, y:ys, completo, parcial) = do 
+   if x == y then
+       auxCompareAnswer (xs,ys,completo + 1,parcial)
+   else do
+       aux <-compareValue (x,ys,0)
+       if aux > 1 then do
+           let p = (parcial + aux) - 1
+           auxCompareAnswer (xs,ys,completo,p)
+       else
+           auxCompareAnswer (xs,ys,completo,parcial)    
+
+--compareAnswer :: ([Char], [Char]) -> (Char, Char)
+compareAnswer (x:xs, y:ys) = do
+    a <- compareLists (x:xs,y:ys)
+    if  a == True then
+        return (4, 0)
     else do
-        aux <-compareValue (x,y:ys,0)
-        if aux > 1 then
-            compareAnswer (xs,ys,completo,parcial+aux-1)
-        else
-            compareAnswer (xs,ys,completo,parcial)    
+        (c, parcial) <- auxCompareAnswer(x:xs, y:ys,0,0)
+        return (c, parcial)
+
+
 -----------------------------------------------------
 main :: IO ()
 main = do 
@@ -72,12 +85,9 @@ main = do
     print b
     c <- addList 4
     print c
-
-
-
-
-
-
+    (a,b) <- compareAnswer(['2','3','1','4'],['2','3','4','1'])
+    print a 
+    print b
 
 
 --    map (print a) [1:4]
