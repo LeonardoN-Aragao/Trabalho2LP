@@ -16,14 +16,14 @@ mostraLista (x:xs) = do
     mostraLista xs
 
 -- auxAddList (0, c) = return c
-auxAddList (0, c) = return [c]
-auxAddList (n, p) = do 
+auxGenerateList (0, c) = return [c]
+auxGenerateList (n, p) = do 
     b <-randomRIO('1','4' :: Char)
-    auxAddList (n-1,b:p)
+    auxGenerateList (n-1,b:p)
 
-addList n = do
+generateList n = do
     b <-randomRIO('1','4' :: Char)
-    c <- auxAddList (n-1,b:[])
+    c <- auxGenerateList (n-1,b:[])
     return c
 
 geraNumeros 0 = return ()
@@ -58,12 +58,12 @@ auxCompareAnswer (x:xs, y:ys, completo, parcial) = do
    if x == y then
        auxCompareAnswer (xs,ys,completo + 1,parcial)
    else do
-       aux <-compareValue (x,ys,0)
-       if aux > 1 then do
-           let p = (parcial + aux) - 1
-           auxCompareAnswer (xs,ys,completo,p)
+       aux <-compareValue (x,y:ys,0)
+       if aux == 1 then do
+            let p = parcial + aux
+            auxCompareAnswer (xs,ys,completo,p)
        else
-           auxCompareAnswer (xs,ys,completo,parcial)    
+            auxCompareAnswer (xs,ys,completo,parcial)    
 
 --compareAnswer :: ([Char], [Char]) -> (Char, Char)
 compareAnswer (x:xs, y:ys) = do
@@ -78,15 +78,17 @@ compareAnswer (x:xs, y:ys) = do
 -----------------------------------------------------
 main :: IO ()
 main = do 
-    mostraLista [0,2..10]
-    a <- compareLists ([1,2,4],[1,2,4])
-    b <- compareLists ([1,2,4],[1,2,5])
-    print a
-    print b
-    c <- addList 4
-    print c
+    -- mostraLista [0,2..10]
+    -- a <- compareLists ([1,2,4],[1,2,4])
+    -- b <- compareLists ([1,2,4],[1,2,5])
+    -- print a
+    -- print b
+    -- c <- generateList 4
+    -- print c
     (a,b) <- compareAnswer(['2','3','1','4'],['2','3','4','1'])
+    print ("Completos:")
     print a 
+    print ("Parciais:")
     print b
 
 
