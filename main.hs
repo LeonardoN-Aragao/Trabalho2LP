@@ -99,13 +99,14 @@ contaParciais(x:xs, y:ys, cont) = do
     if existe == 0 then
         contaParciais(xs, y:ys, cont)
     else do
-        novaLista <- deleteElementByIndex index (y:ys)
+        let novaLista = deleteElementByIndex (index+1) (y:ys)
         --return novaLista
-        contaParciais(xs, novaLista:[], cont+1)
+        contaParciais(xs, novaLista, cont+1)
 
 deleteElementByIndex _ [] = []
 deleteElementByIndex x zs | x > 0 = take (x-1) zs ++ drop x zs
     |   otherwise = zs
+
 
 -----------------------------------------------------
 main :: IO ()
@@ -117,7 +118,7 @@ main = do
     -- print b
     -- c <- generateList 4
     -- print c
-    (a,b) <- compareAnswer(['3','4','6','6'],['3','5','3','6'])
+    (a,b) <- compareAnswer(['4','4','6','6'],['1','4','6','6'])
     print ("Completos:")
     print a 
     print ("Parciais:")
