@@ -18,17 +18,17 @@ mostraLista (x:xs) = do
 -- auxAddList (0, c) = return c
 auxGenerateList (0, c) = return [c]
 auxGenerateList (n, p) = do 
-    b <-randomRIO('1','4' :: Char)
+    b <-randomRIO('1','6' :: Char)
     auxGenerateList (n-1,b:p)
 
 generateList n = do
-    b <-randomRIO('1','4' :: Char)
+    b <-randomRIO('1','6' :: Char)
     c <- auxGenerateList (n-1,b:[])
     return c
 
 geraNumeros 0 = return ()
 geraNumeros n = do 
-    b <-randomRIO('1','4' :: Char)
+    b <-randomRIO('1','6' :: Char)
     print b
     geraNumeros (n-1)
 
@@ -42,38 +42,70 @@ compareLists (x:xs,y:ys) = do
 -----------------------------------------------------
 -- data Info = Info Int Int
 
-compareValue (_,[],p) = return 0
-compareValue (key,x:xs, parcial) = do 
+compareValue (_,[],index) = return (0,-1)
+compareValue (key,x:xs, index) = do 
     if key == x then do
-        return 1
+        return (1,index)
     else 
-        compareValue (key,xs,parcial)
+        compareValue (key,xs,index+1)
 
 -- if está na posicao aumenta 1 no completo
 -- else procura se tem em outra posicao e aumenta o parcial caso tiver
 
 --auxCompareAnswer :: ([Char], [Char], Int, Int) -> (Int, Int)
-auxCompareAnswer ([],[],completo,parcial) = return (completo, parcial)
-auxCompareAnswer (x:xs, y:ys, completo, parcial) = do 
-   if x == y then
-       auxCompareAnswer (xs,ys,completo + 1,parcial)
-   else do
-       aux <-compareValue (x,y:ys,0)
-       if aux == 1 then do
-            let p = parcial + aux
-            auxCompareAnswer (xs,ys,completo,p)
-       else
-            auxCompareAnswer (xs,ys,completo,parcial)    
+-- auxCompareAnswer ([],[],_,completo,parcial) = return (completo, parcial)
+-- auxCompareAnswer (x:xs, y:ys, z:zs, completo, parcial) = do 
+--    if x == y then
+--        auxCompareAnswer (xs,ys,zs,completo + 1,parcial)
+--    else do
+--        (aux, cont) <-compareValue (x,z:zs,0)
+--        if aux == 1 then do
+--             let p = parcial + aux
+--             auxCompareAnswer (xs,ys,z:zs,completo,p)
+--        else
+--             auxCompareAnswer (xs,ys,z:zs,completo,parcial)    
 
 --compareAnswer :: ([Char], [Char]) -> (Char, Char)
-compareAnswer (x:xs, y:ys) = do
-    a <- compareLists (x:xs,y:ys)
-    if  a == True then
-        return (4, 0)
-    else do
-        (c, parcial) <- auxCompareAnswer(x:xs, y:ys,0,0)
-        return (c, parcial)
+-- compareAnswer (x:xs, y:ys) = do
+--     a <- compareLists (x:xs,y:ys)
+--     if  a == True then
+--         return (4, 0)
+--     else do
+--         (c, parcial) <- auxCompareAnswer(x:xs, y:ys, y:ys,0,0)
+--         return (c, parcial)
 
+
+contaCorretos(x:xs, y:ys) = do
+    let listaDeTuplas = zip (x:xs) (y:ys)
+    let tuplasDiferentes = filter (\(x,y) -> x /= y) listaDeTuplas
+    let tuplaDeListas = unzip tuplasDiferentes
+    let lista1 = fst(tuplaDeListas)
+    let lista2 = snd(tuplaDeListas)
+    let qtdIncorretos = length(lista1)
+    return (lista1, lista2, 4 - qtdIncorretos)
+
+--compareAnswer :: ([Char], [Char]) -> (Int, Int)    
+compareAnswer(x:xs, y:ys) = do
+    (lista1, lista2, completos) <- contaCorretos(x:xs, y:ys)
+    if (length(lista1) == 0) then 
+        return (completos, 0)
+    else do
+        parciais <- contaParciais(lista1, lista2, 0)
+        return (completos, parciais)
+
+contaParciais([], _, cont) = return cont
+contaParciais(x:xs, y:ys, cont) = do
+    (existe, index) <- compareValue(x, y:ys, 0)
+    if existe == 0 then
+        contaParciais(xs, y:ys, cont)
+    else do
+        novaLista <- deleteElementByIndex index (y:ys)
+        --return novaLista
+        contaParciais(xs, novaLista:[], cont+1)
+
+deleteElementByIndex _ [] = []
+deleteElementByIndex x zs | x > 0 = take (x-1) zs ++ drop x zs
+    |   otherwise = zs
 
 -----------------------------------------------------
 main :: IO ()
@@ -85,7 +117,7 @@ main = do
     -- print b
     -- c <- generateList 4
     -- print c
-    (a,b) <- compareAnswer(['2','3','1','4'],['2','3','4','1'])
+    (a,b) <- compareAnswer(['3','4','6','6'],['3','5','3','6'])
     print ("Completos:")
     print a 
     print ("Parciais:")
