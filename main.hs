@@ -16,7 +16,7 @@ mostraLista (x:xs) = do
     mostraLista xs
 
 -- auxAddList (0, c) = return c
-auxGenerateList (0, c) = return [c]
+auxGenerateList (0, c) = return c
 auxGenerateList (n, p) = do 
     b <-randomRIO('1','6' :: Char)
     auxGenerateList (n-1,b:p)
@@ -111,22 +111,37 @@ deleteElementByIndex x zs | x > 0 = take (x-1) zs ++ drop x zs
 
 remove (key, list) =  filter (\e -> e/=key) list
 
-verifyNumber list = do
-    aux <- filter (<=6) list
-    return aux
+--isValid :: [Char] -> Bool
+isValid (x:xs) = do
+    let aux2 = filter (<='6') (x:xs)
+    let aux = filter (>'0') aux2
+    length(aux) == 4
 
-getInput = do
+--getInput :: Show a => [a] -> IO ()
+getInput :: ([Char], Int) -> IO () 
+getInput (list, cont) = do
     putStr "? "
     input <- getLine
-    let aux = remove ' ' input
+    let aux = remove (' ', input)
     let tam = length aux
-
-    if (tam < 0 && tam > 5) && verifyNumber aux then
+    if ((tam /= 4) || not(isValid aux)) then do
         putStrLn "Quantidade ou número inválido, por favor digite novamente 4 números de 1-6"
-        getInput
-    else
-
-        map digitToInt ['2','2','4']
+        getInput (list, cont)
+    else do
+        (completo,parcial) <- compareAnswer(aux,list)
+        putStr (show completo)
+        putStr (" Completo, ")
+        putStr (show parcial)
+        putStrLn (" Parcial")
+        if completo == 4 then do
+            putStr ("Parabéns, você acertou após ")
+            putStr (show cont)
+            putStrLn (" tentativas!")
+        else do
+            getInput (list,(cont+1))
+    --getInput
+    
+    --map digitToInt ['2','2','4']
 
 -----------------------------------------------------
 main :: IO ()
@@ -136,13 +151,14 @@ main = do
     -- b <- compareLists ([1,2,4],[1,2,5])
     -- print a
     -- print b
-    -- c <- generateList 4
+    c <- generateList 4
+    getInput(c, 1)
     -- print c
-    (a,b) <- compareAnswer(['4','4','6','6'],['1','4','6','6'])
-    print ("Completos:")
-    print a 
-    print ("Parciais:")
-    print b
+    -- (a,b) <- compareAnswer(['4','4','6','6'],['1','4','6','6'])
+    -- print ("Completos:")
+    -- print a 
+    -- print ("Parciais:")
+    -- print b
 
 
 --    map (print a) [1:4]
