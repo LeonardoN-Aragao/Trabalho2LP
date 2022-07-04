@@ -119,7 +119,7 @@ getInput = do
     putStr "? "
     input <- getLine
     let aux = remove ' ' input
-    let tam = length tent
+    let tam = length aux
 
     if (tam < 0 && tam > 5) && verifyNumber aux then
         putStrLn "Quantidade ou número inválido, por favor digite novamente 4 números de 1-6"
