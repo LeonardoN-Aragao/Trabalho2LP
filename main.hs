@@ -107,6 +107,26 @@ deleteElementByIndex _ [] = []
 deleteElementByIndex x zs | x > 0 = take (x-1) zs ++ drop x zs
     |   otherwise = zs
 
+-----------------------------------------------------
+
+remove (key, list) =  filter (\e -> e/=key) list
+
+verifyNumber list = do
+    aux <- filter (<=6) list
+    return aux
+
+getInput = do
+    putStr "? "
+    input <- getLine
+    let aux = remove ' ' input
+    let tam = length tent
+
+    if (tam < 0 && tam > 5) && verifyNumber aux then
+        putStrLn "Quantidade ou número inválido, por favor digite novamente 4 números de 1-6"
+        getInput
+    else
+
+        map digitToInt ['2','2','4']
 
 -----------------------------------------------------
 main :: IO ()
