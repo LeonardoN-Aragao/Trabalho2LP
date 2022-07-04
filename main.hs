@@ -15,7 +15,7 @@ mostraLista (x:xs) = do
     print x
     mostraLista xs
 
--- auxAddList (0, c) = return c
+
 auxGenerateList (0, c) = return c
 auxGenerateList (n, p) = do 
     b <-randomRIO('1','6' :: Char)
@@ -49,30 +49,7 @@ compareValue (key,x:xs, index) = do
     else 
         compareValue (key,xs,index+1)
 
--- if está na posicao aumenta 1 no completo
--- else procura se tem em outra posicao e aumenta o parcial caso tiver
 
---auxCompareAnswer :: ([Char], [Char], Int, Int) -> (Int, Int)
--- auxCompareAnswer ([],[],_,completo,parcial) = return (completo, parcial)
--- auxCompareAnswer (x:xs, y:ys, z:zs, completo, parcial) = do 
---    if x == y then
---        auxCompareAnswer (xs,ys,zs,completo + 1,parcial)
---    else do
---        (aux, cont) <-compareValue (x,z:zs,0)
---        if aux == 1 then do
---             let p = parcial + aux
---             auxCompareAnswer (xs,ys,z:zs,completo,p)
---        else
---             auxCompareAnswer (xs,ys,z:zs,completo,parcial)    
-
---compareAnswer :: ([Char], [Char]) -> (Char, Char)
--- compareAnswer (x:xs, y:ys) = do
---     a <- compareLists (x:xs,y:ys)
---     if  a == True then
---         return (4, 0)
---     else do
---         (c, parcial) <- auxCompareAnswer(x:xs, y:ys, y:ys,0,0)
---         return (c, parcial)
 
 
 contaCorretos(x:xs, y:ys) = do
@@ -139,52 +116,11 @@ getInput (list, cont) = do
             putStrLn (" tentativas!")
         else do
             getInput (list,(cont+1))
-    --getInput
-    
-    --map digitToInt ['2','2','4']
+
 
 -----------------------------------------------------
 main :: IO ()
 main = do 
-    -- mostraLista [0,2..10]
-    -- a <- compareLists ([1,2,4],[1,2,4])
-    -- b <- compareLists ([1,2,4],[1,2,5])
-    -- print a
-    -- print b
+
     c <- generateList 4
     getInput(c, 1)
-    -- print c
-    -- (a,b) <- compareAnswer(['4','4','6','6'],['1','4','6','6'])
-    -- print ("Completos:")
-    -- print a 
-    -- print ("Parciais:")
-    -- print b
-
-
---    map (print a) [1:4]
- 
--- filter (== 3) [62,3,25,7,1,9] 
-
--- map (+1) [23,42,45,98]
-
--- let square x = x * x in map square [1..10]
-
-
--- let take5s = filter (==5) in map take5s [[1,5],[5],[1,1]]
-
--- map (toUpper) "Chris"
-
--- let (a,b) = (10,12) in a * 2
-
--- let (a:_:_:_) = "xyzert" in a
-
-
-
--- let (_:a:_) = "xyz" in a
-
-
--- let (_,(a:_)) = (10,"abc") in a
-
-
--- let [a,b,c] = "cat" in (a,b,c)
--- ('c','a','t'):: (Char, Char, Char)
