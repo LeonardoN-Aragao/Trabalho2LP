@@ -1,6 +1,8 @@
+-- Gabriel Santos Fortunato: 201665074AC
+-- Leonardo Nunes Aragão: 201665565C
+
 import System.Random (randomRIO, random)
 import Data.Char
-
 
 main :: IO ()
 main = do 
